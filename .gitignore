@@ -22,3 +22,4 @@ index.html
 
 # Code Editor
 .vscode/**
+.markdownlint.json

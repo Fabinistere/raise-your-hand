@@ -16,7 +16,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: "Template  Bevy".to_string(),
+                        title: "Raise your hand!".to_string(),
                         mode: bevy::window::WindowMode::BorderlessFullscreen,
                         // vsync: true,
                         ..Window::default()
