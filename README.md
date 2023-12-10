@@ -44,6 +44,13 @@ In the early stages there is few crowd and obstacle but the further you reach le
 8. **Storyline Integration:**
    - Weave a storyline into the game. Perhaps the friend the player is trying to reach is in a hurry, and the urgency of the situation adds pressure to the gameplay. The narrative can drive the player's motivation and create a sense of connection to the objective.
 
+### Todos
+
+#### Must-Have
+
+- [ ] Player
+  - [ ] Basic Player movement
+
 ## Contribute
 
 Release's format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
