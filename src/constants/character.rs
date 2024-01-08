@@ -4,9 +4,12 @@ pub const CHAR_HITBOX_WIDTH: f32 = 5. * CHAR_SCALE;
 pub const CHAR_SENSOR_Y_OFFSET: f32 = -1.25;
 
 pub mod player {
+    use crate::constants::TILE_SIZE;
+
     pub const PLAYER_WIDTH: f32 = 12.;
     pub const PLAYER_HEIGHT: f32 = 15.;
     pub const PLAYER_SCALE: f32 = super::CHAR_SCALE;
+    pub const PLAYER_SPEED: f32 = 75. * TILE_SIZE;
     // pub const PLAYER_SPAWN: (f32, f32, f32) = (-24., -150., 0.);
 
     pub const CAMERA_INTERPOLATION: f32 = 0.1;

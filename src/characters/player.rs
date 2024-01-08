@@ -102,7 +102,7 @@ fn spawn_player(mut commands: Commands) {
             Name::new("Player"),
             Player,
             // -- Animation --
-            MovementBundle::default(),
+            MovementBundle::new(PLAYER_SPEED),
             // -- Hitbox --
             RigidBody::Dynamic,
             // 10 = Cannot be moved by anything

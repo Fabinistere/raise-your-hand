@@ -23,10 +23,10 @@ image = "0.23"
 
 # ----- Utilities -----
 serde = "1.0"
+rand = "0.8.5"
 # ron = "0.7"
 # strum = "0.24"
 # strum_macros = "0.24"
-# rand = "0.8.5"
 
 # ----------- Debug -----------
 bevy-inspector-egui = "0.21"
