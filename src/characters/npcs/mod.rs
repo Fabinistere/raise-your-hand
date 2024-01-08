@@ -41,7 +41,7 @@ pub struct NPCPlugin;
 impl Plugin for NPCPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::Playing), (spawn_friend, spawn_walkers))
-            .add_systems(Update, movement::friend_movement);
+            .add_systems(Update, (movement::npc_movement, movement::friend_movement));
     }
 }
 
@@ -51,6 +51,10 @@ impl Plugin for NPCPlugin {
 
 #[derive(Component)]
 pub struct NPC;
+
+/// TODO: Change to Entity or Path
+#[derive(Reflect, Deref, DerefMut, Component)]
+pub struct Target(pub Transform);
 
 #[derive(Component)]
 pub struct Friend;
@@ -62,7 +66,43 @@ pub struct NPCHitbox;
 /*                                   Systems                                  */
 /* -------------------------------------------------------------------------- */
 
-fn spawn_walkers(mut commands: Commands) {}
+fn spawn_walkers(mut commands: Commands) {
+    for i in 0..10 {
+        commands
+            .spawn((
+                SpriteBundle {
+                    sprite: Sprite {
+                        color: Color::BLACK,
+                        ..default()
+                    },
+                    transform: Transform {
+                        translation: Vec3::from((10. * i as f32, 20. * i as f32, 0.)),
+                        scale: Vec3::splat(NPC_SCALE),
+                        ..default()
+                    },
+                    ..default()
+                },
+                Name::new(format!("NPC {}", i)),
+                NPC,
+                // -- Movement --
+                Target(movement::new_transform()),
+                // -- Animation --
+                MovementBundle::default(),
+                // -- Hitbox --
+                RigidBody::Dynamic,
+                LockedAxes::ROTATION_LOCKED,
+            ))
+            .with_children(|parent| {
+                parent.spawn((
+                    Collider::ball(CHAR_HITBOX_WIDTH),
+                    // Transform::from_xyz(0., CHAR_HITBOX_Y_OFFSET, 0.),
+                    NPCHitbox,
+                    CharacterHitbox,
+                    Name::new(format!("NPC {} Hitbox", i)),
+                ));
+            });
+    }
+}
 
 fn spawn_friend(mut commands: Commands) {
     commands
