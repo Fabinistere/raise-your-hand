@@ -1,4 +1,5 @@
 pub mod movement;
+pub mod npcs;
 pub mod player;
 
 use bevy::prelude::*;

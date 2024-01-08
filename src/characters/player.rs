@@ -15,8 +15,7 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_systems(Startup, spawn_player)
+        app.add_systems(OnEnter(GameState::Playing), spawn_player)
             .add_systems(Update, (player_movement, camera_follow));
     }
 }
@@ -36,7 +35,6 @@ pub struct PlayerInteractionSensor;
 #[derive(Component)]
 pub struct PlayerCloseSensor;
 
-/// FIXME: Freeze the player when in dialog (trigger for ex when interacting while running)
 fn player_movement(
     key_bindings: Res<KeyBindings>,
     keyboard_input: Res<Input<KeyCode>>,
@@ -93,12 +91,12 @@ fn camera_follow(
 fn spawn_player(mut commands: Commands) {
     commands
         .spawn((
-            SpriteSheetBundle {
-                // texture_atlas: characters_spritesheet.texture_atlas.clone(),
-                transform: Transform {
-                    scale: Vec3::splat(PLAYER_SCALE),
-                    ..Transform::default()
+            SpriteBundle {
+                sprite: Sprite {
+                    color: Color::BLACK,
+                    ..default()
                 },
+                transform: Transform::from_scale(Vec3::splat(PLAYER_SCALE)),
                 ..default()
             },
             Name::new("Player"),

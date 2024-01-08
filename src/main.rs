@@ -65,11 +65,8 @@ pub enum GameState {
 #[derive(Component)]
 struct PlayerCamera;
 
-fn game_setup(
-    mut commands: Commands,
-    // mut rapier_config: ResMut<RapierConfiguration>
-) {
-    // rapier_config.gravity = Vect::ZERO;
+fn game_setup(mut commands: Commands, mut rapier_config: ResMut<RapierConfiguration>) {
+    rapier_config.gravity = Vect::ZERO;
 
     let mut camera = Camera2dBundle::default();
     camera.projection.scale = 0.1;
