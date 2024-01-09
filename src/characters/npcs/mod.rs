@@ -50,17 +50,20 @@ impl Plugin for NPCPlugin {
 /* -------------------------------------------------------------------------- */
 
 #[derive(Component)]
-pub struct NPC;
+pub struct Walker;
 
 /// TODO: Change to Entity or Path
 #[derive(Reflect, Deref, DerefMut, Component)]
 pub struct Target(pub Transform);
 
 #[derive(Component)]
+pub struct WalkerHitbox;
+
+#[derive(Component)]
 pub struct Friend;
 
 #[derive(Component)]
-pub struct NPCHitbox;
+pub struct FriendHitbox;
 
 /* -------------------------------------------------------------------------- */
 /*                                   Systems                                  */
@@ -82,8 +85,8 @@ fn spawn_walkers(mut commands: Commands) {
                     },
                     ..default()
                 },
-                Name::new(format!("NPC {}", i)),
-                NPC,
+                Name::new(format!("Walker {}", i)),
+                Walker,
                 // -- Movement --
                 Target(movement::new_transform()),
                 // -- Animation --
@@ -96,9 +99,9 @@ fn spawn_walkers(mut commands: Commands) {
                 parent.spawn((
                     Collider::ball(CHAR_HITBOX_WIDTH),
                     // Transform::from_xyz(0., CHAR_HITBOX_Y_OFFSET, 0.),
-                    NPCHitbox,
+                    WalkerHitbox,
                     CharacterHitbox,
-                    Name::new(format!("NPC {} Hitbox", i)),
+                    Name::new(format!("Walker {} Hitbox", i)),
                 ));
             });
     }
@@ -120,7 +123,6 @@ fn spawn_friend(mut commands: Commands) {
                 ..default()
             },
             Name::new("The Friend"),
-            NPC,
             Friend,
             // -- Animation --
             MovementBundle::default(),
@@ -134,8 +136,9 @@ fn spawn_friend(mut commands: Commands) {
             parent.spawn((
                 Collider::ball(CHAR_HITBOX_WIDTH),
                 // Transform::from_xyz(0., CHAR_HITBOX_Y_OFFSET, 0.),
-                NPCHitbox,
+                FriendHitbox,
                 CharacterHitbox,
+                ActiveEvents::COLLISION_EVENTS,
                 Name::new("Friend Hitbox"),
             ));
         });

@@ -115,6 +115,7 @@ fn spawn_player(mut commands: Commands) {
                 // Transform::from_xyz(0., CHAR_HITBOX_Y_OFFSET, 0.),
                 PlayerHitbox,
                 CharacterHitbox,
+                ActiveEvents::COLLISION_EVENTS,
                 Name::new("Player Hitbox"),
             ));
         });

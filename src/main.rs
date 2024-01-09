@@ -5,6 +5,7 @@ use bevy_rapier2d::prelude::*;
 use controls::Key;
 
 mod characters;
+pub mod collisions;
 pub mod constants;
 pub mod controls;
 mod debug;
