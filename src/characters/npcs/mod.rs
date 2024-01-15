@@ -5,6 +5,7 @@ use bevy_rapier2d::prelude::*;
 
 use crate::{
     constants::character::{npcs::NPC_SCALE, CHAR_HITBOX_WIDTH},
+    level::Level,
     GameState,
 };
 
@@ -40,8 +41,12 @@ pub struct NPCPlugin;
  */
 impl Plugin for NPCPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), (spawn_friend, spawn_walkers))
-            .add_systems(Update, (movement::npc_movement, movement::friend_movement));
+        app.add_systems(OnEnter(GameState::Init), (spawn_friend, spawn_walkers))
+            .add_systems(
+                Update,
+                (movement::npc_movement, movement::friend_movement)
+                    .run_if(in_state(GameState::Playing)),
+            );
     }
 }
 
@@ -50,24 +55,29 @@ impl Plugin for NPCPlugin {
 /* -------------------------------------------------------------------------- */
 
 #[derive(Component)]
-pub struct NPC;
+pub struct Walker;
 
 /// TODO: Change to Entity or Path
+///
+/// TODO: feature - pathfinding to reach the entity
 #[derive(Reflect, Deref, DerefMut, Component)]
 pub struct Target(pub Transform);
+
+#[derive(Component)]
+pub struct WalkerHitbox;
 
 #[derive(Component)]
 pub struct Friend;
 
 #[derive(Component)]
-pub struct NPCHitbox;
+pub struct FriendHitbox;
 
 /* -------------------------------------------------------------------------- */
-/*                                   Systems                                  */
+/*                                  Spawners                                  */
 /* -------------------------------------------------------------------------- */
 
-fn spawn_walkers(mut commands: Commands) {
-    for i in 0..10 {
+fn spawn_walkers(mut commands: Commands, level: Res<Level>) {
+    for i in 0..(level.difficulty * 10) {
         commands
             .spawn((
                 SpriteBundle {
@@ -82,8 +92,8 @@ fn spawn_walkers(mut commands: Commands) {
                     },
                     ..default()
                 },
-                Name::new(format!("NPC {}", i)),
-                NPC,
+                Name::new(format!("Walker {}", i)),
+                Walker,
                 // -- Movement --
                 Target(movement::new_transform()),
                 // -- Animation --
@@ -96,9 +106,9 @@ fn spawn_walkers(mut commands: Commands) {
                 parent.spawn((
                     Collider::ball(CHAR_HITBOX_WIDTH),
                     // Transform::from_xyz(0., CHAR_HITBOX_Y_OFFSET, 0.),
-                    NPCHitbox,
+                    WalkerHitbox,
                     CharacterHitbox,
-                    Name::new(format!("NPC {} Hitbox", i)),
+                    Name::new(format!("Walker {} Hitbox", i)),
                 ));
             });
     }
@@ -120,7 +130,6 @@ fn spawn_friend(mut commands: Commands) {
                 ..default()
             },
             Name::new("The Friend"),
-            NPC,
             Friend,
             // -- Animation --
             MovementBundle::default(),
@@ -134,8 +143,9 @@ fn spawn_friend(mut commands: Commands) {
             parent.spawn((
                 Collider::ball(CHAR_HITBOX_WIDTH),
                 // Transform::from_xyz(0., CHAR_HITBOX_Y_OFFSET, 0.),
-                NPCHitbox,
+                FriendHitbox,
                 CharacterHitbox,
+                ActiveEvents::COLLISION_EVENTS,
                 Name::new("Friend Hitbox"),
             ));
         });

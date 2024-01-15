@@ -5,9 +5,11 @@ use bevy_rapier2d::prelude::*;
 use controls::Key;
 
 mod characters;
+pub mod collisions;
 pub mod constants;
 pub mod controls;
 mod debug;
+mod level;
 
 fn main() {
     let mut app = App::new();
@@ -39,6 +41,7 @@ fn main() {
             // bevy_tweening::TweeningPlugin,
             RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(1.),
             // ----- Our plugins -----
+            level::LevelPlugin,
             characters::CharactersPlugin,
             debug::DebugPlugin,
         ))
@@ -57,8 +60,9 @@ fn main() {
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Default, Reflect, States)]
 pub enum GameState {
-    Menu,
+    TitleScreen,
     #[default]
+    Init,
     Playing,
 }
 

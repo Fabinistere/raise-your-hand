@@ -6,7 +6,7 @@ use rand::Rng;
 
 use crate::characters::movement::Speed;
 
-use super::{Friend, Target, NPC};
+use super::{Friend, Target, Walker};
 
 // pub const PROXIMITY_RADIUS: f32 = 64.;
 
@@ -29,7 +29,7 @@ pub fn friend_movement(
             // &mut NPCBehavior,
             &mut Velocity,
         ),
-        (With<NPC>, With<Friend>),
+        With<Friend>,
     >,
 ) {
     if let Ok((_friend, mut rb_vel)) = friend_query.get_single_mut() {
@@ -49,7 +49,7 @@ pub fn npc_movement(
             &mut Target,
             &Name,
         ),
-        (With<NPC>, Without<Friend>),
+        With<Walker>,
     >,
 ) {
     for (_npc, transform, speed, mut rb_vel, mut target_transform, _npc_name) in &mut npc_query {
