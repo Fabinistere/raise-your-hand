@@ -16,7 +16,10 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::Playing), spawn_player)
-            .add_systems(Update, (player_movement, camera_follow));
+            .add_systems(
+                Update,
+                (player_movement, camera_follow).run_if(in_state(GameState::Playing)),
+            );
     }
 }
 
@@ -115,6 +118,7 @@ fn spawn_player(mut commands: Commands) {
                 // Transform::from_xyz(0., CHAR_HITBOX_Y_OFFSET, 0.),
                 PlayerHitbox,
                 CharacterHitbox,
+                ActiveEvents::COLLISION_EVENTS,
                 Name::new("Player Hitbox"),
             ));
         });
