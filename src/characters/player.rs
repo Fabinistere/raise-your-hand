@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
@@ -10,6 +12,8 @@ use crate::{
     controls::KeyBindings,
     GameState, PlayerCamera,
 };
+
+use super::npcs::movement::Direction;
 
 pub struct PlayerPlugin;
 
@@ -41,9 +45,21 @@ pub struct PlayerCloseSensor;
 fn player_movement(
     key_bindings: Res<KeyBindings>,
     keyboard_input: Res<Input<KeyCode>>,
-    mut player_query: Query<(Entity, &Speed, &mut Velocity), With<Player>>,
+    mut player_query: Query<
+        (
+            Entity,
+            &Speed,
+            &mut Velocity,
+            // v-- used to rotate the player --v
+            &mut Direction,
+            &mut Transform,
+        ),
+        With<Player>,
+    >,
 ) {
-    if let Ok((_player, speed, mut rb_vel)) = player_query.get_single_mut() {
+    if let Ok((_player, speed, mut rb_vel, mut direction, mut transform)) =
+        player_query.get_single_mut()
+    {
         let up = keyboard_input.any_pressed(key_bindings.up());
         let down = keyboard_input.any_pressed(key_bindings.down());
         let left = keyboard_input.any_pressed(key_bindings.left());
@@ -63,6 +79,14 @@ fn player_movement(
         // rb_vel.linvel.x = x_axis as f32 * **speed * 200. * time.delta_seconds();
         rb_vel.linvel.x = vel_x;
         rb_vel.linvel.y = vel_y;
+
+        if let Some(new_dir) = Direction::from_binaries(up, down, left, right) {
+            *direction = new_dir;
+
+            let angle = direction.to_angle();
+
+            transform.rotation = Quat::from_rotation_z(angle);
+        }
     }
 }
 
@@ -105,6 +129,7 @@ fn spawn_player(mut commands: Commands) {
             Name::new("Player"),
             Player,
             // -- Animation --
+            Direction::default(),
             MovementBundle::new(PLAYER_SPEED),
             // -- Hitbox --
             RigidBody::Dynamic,
@@ -120,6 +145,13 @@ fn spawn_player(mut commands: Commands) {
                 CharacterHitbox,
                 ActiveEvents::COLLISION_EVENTS,
                 Name::new("Player Hitbox"),
+            ));
+            parent.spawn((
+                Collider::cuboid(3., 3.5),
+                Transform::from_xyz(0., 5., 0.),
+                // FrontSensor,
+                Sensor,
+                Name::new("Player TEST Front Sensor"),
             ));
         });
 }

@@ -1,7 +1,6 @@
 pub const CHAR_SCALE: f32 = 0.6 * super::TILE_SIZE;
 
 pub const CHAR_HITBOX_WIDTH: f32 = 5. * CHAR_SCALE;
-pub const CHAR_SENSOR_Y_OFFSET: f32 = -1.25;
 
 pub mod player {
     use crate::constants::TILE_SIZE;

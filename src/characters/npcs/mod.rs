@@ -9,6 +9,8 @@ use crate::{
     GameState,
 };
 
+use self::movement::{Direction, DodgeMeasure, FrontSensor};
+
 use super::{movement::MovementBundle, CharacterHitbox};
 
 pub mod movement;
@@ -44,7 +46,11 @@ impl Plugin for NPCPlugin {
         app.add_systems(OnEnter(GameState::Init), (spawn_friend, spawn_walkers))
             .add_systems(
                 Update,
-                (movement::npc_movement, movement::friend_movement)
+                (
+                    movement::dodge_measure.before(movement::walker_movement),
+                    movement::walker_movement,
+                    movement::friend_movement,
+                )
                     .run_if(in_state(GameState::Playing)),
             );
     }
@@ -95,7 +101,9 @@ fn spawn_walkers(mut commands: Commands, level: Res<Level>) {
                 Name::new(format!("Walker {}", i)),
                 Walker,
                 // -- Movement --
-                Target(movement::new_transform()),
+                Target(movement::new_place_to_go()),
+                DodgeMeasure::default(),
+                Direction::default(),
                 // -- Animation --
                 MovementBundle::default(),
                 // -- Hitbox --
@@ -109,6 +117,14 @@ fn spawn_walkers(mut commands: Commands, level: Res<Level>) {
                     WalkerHitbox,
                     CharacterHitbox,
                     Name::new(format!("Walker {} Hitbox", i)),
+                ));
+
+                parent.spawn((
+                    Collider::cuboid(3., 3.5),
+                    Transform::from_xyz(0., 5., 0.),
+                    FrontSensor,
+                    Sensor,
+                    Name::new(format!("Walker {} Front Sensor", i)),
                 ));
             });
     }

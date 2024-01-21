@@ -25,8 +25,6 @@ impl Plugin for CharactersPlugin {
 pub struct CharacterHitbox;
 
 /// Collisions detector between the player and the friend
-///
-/// Call the function `[raise-your-hand::level::win]`
 fn friends_reunited(
     mut collision_events: EventReader<CollisionEvent>,
     friend_hitbox_query: Query<&Parent, With<FriendHitbox>>,

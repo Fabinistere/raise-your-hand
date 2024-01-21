@@ -49,7 +49,7 @@ In the early stages there is few crowd and obstacle but the further you reach le
 #### Must-Have
 
 - [ ] Player
-  - [ ] Basic Player movement
+  - [x] Basic Player movement
 
 ## Contribute
 
